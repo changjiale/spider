@@ -3,7 +3,7 @@
 '''
 import requests
 import os
-url = "http://acm.pdsu.edu.cn/vcode.php"
+url = "xxxx"
 
 dir_path = 'img'
 if not os.path.exists(dir_path):

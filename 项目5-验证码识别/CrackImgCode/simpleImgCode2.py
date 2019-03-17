@@ -2,13 +2,14 @@ from PIL import Image
 import pytesseract
 import tesserocr
 from PIL import Image
+import os
 
 import re
 '''
 获取图片
 '''
-def getImage():
-    fileName = 'vcode.jpg'
+def getImage(one_img):
+    fileName = 'img'+os.path.sep+one_img
     img = Image.open(fileName)
     # 打印当前图片的模式以及格式
     print('未转化前的: ', img.mode, img.format)
@@ -47,7 +48,6 @@ def change_Image_to_text(img):
     如果出现找不到训练库的位置, 需要我们手动自动
     语法: tessdata_dir_config = '--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     '''
-    print(1)
     # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
     testdata_dir_config = '--tessdata-dir "C:\\Program Files (x86)\\Tesseract-OCR"'
     textCode = pytesseract.image_to_string(img, lang='eng', config=testdata_dir_config)
@@ -56,9 +56,10 @@ def change_Image_to_text(img):
     return textCode
 
 def main():
-    img = convert_Image(getImage())
-    print(2)
-    print('识别的结果：', change_Image_to_text(img))
+    imgs = os.listdir(r'img')
+    for one_img in imgs:
+        img = convert_Image(getImage(one_img))
+        print('识别的结果：', change_Image_to_text(img))
 
 if __name__ == '__main__':
     main()
