@@ -56,6 +56,62 @@ class RedisClient(object):
             else:
                 raise PoolEmptyError
 
+    def decrease(self, proxy):
+        '''
+        代理值减一，小于最小值删除
+        :param proxy: 代理
+        :return: 修改后的分数
+        '''
+        score = self.db.zscore(REDIS_KEY, proxy)
+        if score and score > MIN_SCORE:
+            print('代理', proxy, '当前分数', score, '减一')
+            #将redis_key对应的值+(-1)
+            return self.db.zincrby(REDIS_KEY, proxy, -1)
+        else:
+            print("代理",proxy,'当前分数',score,'移除')
+            # 删除
+            return self.db.zrem(REDIS_KEY, proxy)
+
+    def exits(self, proxy):
+        '''
+        判断是否存在
+        :param proxy:
+        :return:
+        '''
+        return not self.db.zscore(REDIS_KEY, proxy) == None
+
+    def max(self, proxy):
+        '''
+        将代理设置为MAX_SCORE
+        :param proxy:
+        :return:
+        '''
+        print('代理', proxy, '可用, 设置为',MAX_SCORE)
+        return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+
+    def count(self):
+        '''
+        获取数量
+        :return:
+        '''
+        return self.db.zcard(REDIS_KEY)
+
+    def all(self):
+        '''
+        获取全部代理
+        :return:
+        '''
+        return self.db.zrangebyscore(REDIS_KEY, MIN_SCORE, MAX_SCORE)
+
+    def batch(self, start, stop):
+        '''
+        批量获取
+        :param start:开始索引
+        :param stop:结束索引
+        :return:代理列表
+        '''
+        return self.db.zrevrange(REDIS_KEY, start, stop-1)
+
 
 class PoolEmptyError(Exception):
 
@@ -64,3 +120,8 @@ class PoolEmptyError(Exception):
 
     def __str__(self):
         return repr('代理池已经枯竭')
+
+#测试
+if __name__ == '__main__':
+    conn = RedisClient()
+    result = conn.batch(0,100)
