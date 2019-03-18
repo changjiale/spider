@@ -12,7 +12,7 @@ REDIS_PASSWORD = None
 REDIS_KEY = "proxies"
 
 '''
-redis存储模块
+redis可用代理存储模块
 '''
 class RedisClient(object):
 
