@@ -37,7 +37,7 @@ class RedisClient(object):
             print("代理不符合规范,",proxy,"丢弃")
             return
         if not self.db.zscore(REDIS_KEY, proxy):
-            return self.db.zadd(REDIS_KEY,score,proxy)
+            return self.db.zadd(REDIS_KEY,{proxy:score})
 
     def random(self):
         '''
@@ -66,7 +66,7 @@ class RedisClient(object):
         if score and score > MIN_SCORE:
             print('代理', proxy, '当前分数', score, '减一')
             #将redis_key对应的值+(-1)
-            return self.db.zincrby(REDIS_KEY, proxy, -1)
+            return self.db.zincrby(REDIS_KEY, -1, proxy)
         else:
             print("代理",proxy,'当前分数',score,'移除')
             # 删除
@@ -87,7 +87,7 @@ class RedisClient(object):
         :return:
         '''
         print('代理', proxy, '可用, 设置为',MAX_SCORE)
-        return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+        return self.db.zadd(REDIS_KEY, {proxy:MAX_SCORE})
 
     def count(self):
         '''
@@ -125,3 +125,9 @@ class PoolEmptyError(Exception):
 if __name__ == '__main__':
     conn = RedisClient()
     result = conn.batch(0,100)
+    #result = conn.add('192.168.1.2:6060',10)
+    #result = conn.random()
+    #result = conn.decrease('192.168.1.1:6060')
+    #result = conn.exits('192.168.1.1:6060')
+    #result = conn.max('192.168.1.1:6060')
+    print(result)

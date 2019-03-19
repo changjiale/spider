@@ -5,7 +5,6 @@ class ProxyMetaclass(type):
     def __new__(cls, name, bases, attrs):
         count = 0
 
-
 class PoolEmptyError(Exception):
 
     def __init__(self):
