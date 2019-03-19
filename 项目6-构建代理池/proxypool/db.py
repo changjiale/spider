@@ -1,6 +1,7 @@
 import redis
 from random import choice
 import re
+from exception import PoolEmptyError
 
 #定义常量
 MAX_SCORE = 100
@@ -113,13 +114,6 @@ class RedisClient(object):
         return self.db.zrevrange(REDIS_KEY, start, stop-1)
 
 
-class PoolEmptyError(Exception):
-
-    def __init__(self):
-        Exception.__init__(self)
-
-    def __str__(self):
-        return repr('代理池已经枯竭')
 
 #测试
 if __name__ == '__main__':

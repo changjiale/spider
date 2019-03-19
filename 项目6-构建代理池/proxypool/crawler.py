@@ -1,7 +1,9 @@
 import json
 import re
 from pyquery import PyQuery as pq
-from .utils import get_page
+from utils import get_page
+from exception import PoolEmptyError
+
 class ProxyMetaclass(type):
     def __new__(cls, name, bases, attrs):
         count = 0
@@ -45,10 +47,41 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     port = tr.find('td:nth-child(2)').text()
                     yield ':'.join([ip, port])
 
-class PoolEmptyError(Exception):
+    def crawl_ip3366(self):
+        for page in range(1, 7):
+            start_url = 'http://www.ip3366.net/free/?stype=1&page={}'.format(page)
+            html = get_page(start_url)
+            if html:
+                doc = pq(html)
+                trs = doc('#list table tbody tr').items()
+                for tr in trs:
+                    ip = tr.find('td:nth-child(1)').text()
+                    port = tr.find('td:nth-child(2)').text()
+                    yield ':'.join([ip, port])
 
-    def __init__(self):
-        Exception.__init__(self)
+    def crawl_kuaidaili(self):
+        for i in range(1,6):
+            start_url = 'http://www.kuaidaili.com/free/inha/{}/'.format(i)
+            html = get_page(start_url)
+            if html:
+                ip_address =  re.compile('<td data-title="IP">(.*?)</td>')
+                re_ip_address = ip_address.findall(html)
+                port = re.compile('<td data-title="PORT">(.*?)</td>')
+                re_port = port.findall(html)
+                for address, port in zip(re_ip_address, re_port):
+                    address_port = address + ':' + port
+                    yield address_port.replace(' ', '')
 
-    def __str__(self):
-        return repr('代理池已经枯竭')
+    def crawl_xicidaili(self):
+        for i in range(1,6):
+
+
+
+
+#测试
+if __name__ == '__main__':
+    crawler = Crawler()
+    proxies = crawler.crawl_kuaidaili()
+    for proxy in proxies:
+        print(proxy)
+

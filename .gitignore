@@ -2,3 +2,4 @@
 .gitattributes
 项目6-构建代理池/proxypool/.idea/
 项目6-构建代理池/proxypool/venv/
+项目6-构建代理池/proxypool/__pycache__/
