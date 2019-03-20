@@ -3,7 +3,9 @@ import re
 from pyquery import PyQuery as pq
 from utils import get_page
 from exception import PoolEmptyError
-
+'''
+ip代理池抓取部分
+'''
 class ProxyMetaclass(type):
     def __new__(cls, name, bases, attrs):
         count = 0
@@ -48,6 +50,10 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     yield ':'.join([ip, port])
 
     def crawl_ip3366(self):
+        '''
+        获取ip3366代理
+        :return:
+        '''
         for page in range(1, 7):
             start_url = 'http://www.ip3366.net/free/?stype=1&page={}'.format(page)
             html = get_page(start_url)
@@ -60,6 +66,10 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     yield ':'.join([ip, port])
 
     def crawl_kuaidaili(self):
+        '''
+        获取快代理
+        :return:
+        '''
         for i in range(1,6):
             start_url = 'http://www.kuaidaili.com/free/inha/{}/'.format(i)
             html = get_page(start_url)
@@ -73,7 +83,63 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     yield address_port.replace(' ', '')
 
     def crawl_xicidaili(self):
+        '''
+        获取西刺代理
+        :return:
+        '''
         for i in range(1,6):
+            start_url = 'http://www.xicidaili.com/nn/{}'.format(i)
+            html = get_page(start_url)
+            if html:
+                find_trs = re.compile('<tr class.*?>(.*?)</tr>', re.S)
+                trs = find_trs.findall(html)
+                for tr in trs:
+                    find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+                    re_ip_address = find_ip.findall(tr)
+                    find_port = re.compile('<td>(\d+)</td>')
+                    re_port = find_port.findall(tr)
+                    for address, port in zip(re_ip_address, re_port):
+                        address_port = address + ':' + port
+                        yield address_port.replace(' ', '')
+
+    def crawl_ip3366(self):
+        '''
+        获取3366首页代理
+        :return:
+        '''
+        for i in range(1, 4):
+            start_url = 'http://www.ip3366.net/?stype=1&page={}'.format(i)
+            html = get_page(start_url)
+            if html:
+                find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+                trs = find_tr.findall(html)
+                for s in range(1, len(trs)):
+                    find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+                    re_ip_address = find_ip.findall(trs[s])
+                    find_port = re.compile('<td>(\d+)</td>')
+                    re_port = find_port.findall(trs[s])
+                    for address, port in zip(re_ip_address, re_port):
+                        address_port = address + ':' + port
+                        yield address_port.replace(' ', '')
+
+    def crawl_iphai(self):
+        '''
+        获取ip海代理
+        :return:
+        '''
+        start_url = 'http://www.iphai.com/'
+        html = get_page(start_url)
+        if html:
+            find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+            trs = find_tr.findall(html)
+            for s in range(1, len(trs)):
+                find_ip = re.compile('<td>\s+(\d+\.\d+\.\d+\.\d+)\s+</td>', re.S)
+                re_ip_address = find_ip.findall(trs[s])
+                find_port = re.compile('<td>\s+(\d+)\s+</td>', re.S)
+                re_port = find_port.findall(trs[s])
+                for address, port in zip(re_ip_address, re_port):
+                    address_port = address + ':' + port
+                    yield address_port.replace(' ', '')
 
 
 
