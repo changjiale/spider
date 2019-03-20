@@ -22,6 +22,10 @@ class Getter():
             return False
 
     def run(self):
+        '''
+        运行
+        :return:
+        '''
         print('获取器开始执行')
         if not self.is_over_threshold():
             for callback_label in range(self.crawler.__CrawlFuncCount__):
