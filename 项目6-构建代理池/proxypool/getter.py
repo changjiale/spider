@@ -2,7 +2,11 @@ from db import RedisClient
 from crawler import Crawler
 import sys
 
+#代理池最大代理数量
 POOL_UPPER_THRESHOLD = 50000
+'''
+调用crawler代理获取模块，自动匹配方法，动态获取代理
+'''
 class Getter():
     def __init__(self):
         self.redis = RedisClient()
