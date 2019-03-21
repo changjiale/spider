@@ -113,6 +113,8 @@ class RedisClient(object):
         '''
         return self.db.zrevrange(REDIS_KEY, start, stop-1)
 
+    def delete(self, proxy):
+        self.db.zrem(REDIS_KEY, proxy)
 
 
 #测试

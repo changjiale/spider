@@ -12,8 +12,10 @@ from db import RedisClient
 TEST_URL = 'http://www.baidu.com'
 #可用状态码
 VALID_STATUS_CODES = [200, 302]
-
-class Tester(object):
+'''
+检查代理是否可用
+'''
+class Check(object):
     def __init__(self):
         self.redis = RedisClient()
 
@@ -66,5 +68,5 @@ class Tester(object):
             print('测试发生错误', e.args)
 
 if __name__ == '__main__':
-    Tester().run()
+    Check().run()
 

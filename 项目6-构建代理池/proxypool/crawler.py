@@ -14,7 +14,7 @@ class ProxyMetaclass(type):
             if 'crawl_' in k:
                 attrs['__CrawlFunc__'].append(k)
                 count += 1
-        attrs['__CrawlFunc__'] = count
+        attrs['__CrawlFuncCount__'] = count
         return type.__new__(cls, name, bases, attrs)
 
 class Crawler(object, metaclass=ProxyMetaclass):
@@ -25,7 +25,7 @@ class Crawler(object, metaclass=ProxyMetaclass):
         :return:代理列表
         '''
         proxies = []
-        for proxy in eval('self.{}()',format(callback)):
+        for proxy in eval('self.{}()'.format(callback)):
             print('代理获取成功', proxy)
             proxies.append(proxy)
         return proxies
@@ -147,7 +147,7 @@ class Crawler(object, metaclass=ProxyMetaclass):
 #测试
 if __name__ == '__main__':
     crawler = Crawler()
-    proxies = crawler.crawl_kuaidaili()
+    proxies = crawler.crawl_daili66()
     for proxy in proxies:
         print(proxy)
 

@@ -28,11 +28,13 @@ class Getter():
         '''
         print('获取器开始执行')
         if not self.is_over_threshold():
+            print(self.crawler.__CrawlFuncCount__)
             for callback_label in range(self.crawler.__CrawlFuncCount__):
                 callback = self.crawler.__CrawlFunc__[callback_label]
                 # 获取代理
                 proxies = self.crawler.get_proxies(callback)
                 #强制刷新缓冲区
                 sys.stdout.flush()
+                print('存储代理')
                 for proxy in proxies:
                     self.redis.add(proxy)
